@@ -9,9 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,13 +25,18 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import group7.ltdd.adapter.UserAdapter;
 import group7.ltdd.model.Users;
 
-public class ListUserActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
-    CircleImageView profile_image;
+public class SocialActivity extends AppCompatActivity {
+
+    TabHost tabHost;
+
     TextView txtUsername;
+    ImageView imgProfile;
+
+    FirebaseUser myuser;
+
 
     FirebaseUser myUser;
 
@@ -43,36 +49,55 @@ public class ListUserActivity extends AppCompatActivity implements AdapterView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_user);
+        setContentView(R.layout.activity_social);
         AddControls();
         AddEvents();
-
     }
 
-
     private void AddControls() {
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
+        tabHost = findViewById(R.id.tabHost);
+        tabHost.setup();
+        TabHost.TabSpec tab1 = tabHost.newTabSpec("t1");
+        tab1.setContent(R.id.tab1);
+        tab1.setIndicator("",getResources().getDrawable(R.drawable.ic_profile));
+        tabHost.addTab(tab1);
 
-        profile_image = this.<CircleImageView>findViewById(R.id.profile_image);
-        txtUsername= this.<TextView>findViewById(R.id.txtUsername);
+        TabHost.TabSpec tab2 = tabHost.newTabSpec("t2");
+        tab2.setContent(R.id.tab2);
+        tab2.setIndicator("",getResources().getDrawable(R.drawable.ic_newsfeed));
+        tabHost.addTab(tab2);
         lvUsers = this.<ListView>findViewById(R.id.listUsers);
 
-        myUser = FirebaseAuth.getInstance().getCurrentUser();
-        myRef = FirebaseDatabase.getInstance().getReference("account").child(myUser.getUid());
+        TabHost.TabSpec tab3 = tabHost.newTabSpec("t3");
+        tab3.setContent(R.id.tab3);
+        tab3.setIndicator("",getResources().getDrawable(R.drawable.ic_chat));
+        tabHost.addTab(tab3);
+
+
+        txtUsername= this.<TextView>findViewById(R.id.txtUsername);
+        imgProfile= this.<ImageView>findViewById(R.id.profile_image);
+    }
+
+
+    private void AddEvents() {
+        myuser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("account").child(myuser.getUid());
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Users user = dataSnapshot.getValue(Users.class);
-                txtUsername.setText(user.getUsername());
+                txtUsername.setText(user.getName());
                 if (user.getImageURL().equals("default"))
                 {
-                    profile_image.setImageResource(R.drawable.default_user_art_g_2);
+                    imgProfile.setImageResource(R.drawable.default_user_art_g_2);
                 }
                 else
-                    Glide.with(ListUserActivity.this).load(user.getImageURL()).into(profile_image);
+                    Glide.with(SocialActivity.this).load(user.getImageURL()).into(imgProfile);
             }
 
             @Override
@@ -81,15 +106,29 @@ public class ListUserActivity extends AppCompatActivity implements AdapterView.O
             }
         });
 
-        dsUsers = new ArrayList<>();
-        adapterUsers = new UserAdapter(ListUserActivity.this,R.layout.item_user,dsUsers);
-        lvUsers.setAdapter(adapterUsers);
-        LayDanhSachUser();
-        adapterUsers.notifyDataSetChanged();
-    }
+        lvUsers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Users user = dsUsers.get(position);
+                Intent intent = new Intent(SocialActivity.this,ChatActivity.class);
+                intent.putExtra("userid",user.getId());
+                startActivity(intent);
+            }
+        });
+        tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
 
-    private void AddEvents() {
-        lvUsers.setOnItemClickListener(this);
+                if (tabId.equalsIgnoreCase("t1")) {
+
+                } else if (tabId.equalsIgnoreCase("t2")) {
+
+                } else {
+                    XuLyTagChat();
+                }
+            }
+
+        });
     }
 
     @Override
@@ -104,15 +143,24 @@ public class ListUserActivity extends AppCompatActivity implements AdapterView.O
         {
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(ListUserActivity.this,MainActivity.class));
+                startActivity(new Intent(SocialActivity.this,MainActivity.class));
                 finish();
                 return true;
         }
         return false;
     }
 
-    private void LayDanhSachUser()
+
+    private void XuLyTagChat()
     {
+        dsUsers = new ArrayList<>();
+        adapterUsers = new UserAdapter(SocialActivity.this,R.layout.item_user,dsUsers);
+        lvUsers.setAdapter(adapterUsers);
+        LayDanhSachUser();
+        adapterUsers.notifyDataSetChanged();
+    }
+
+    private void LayDanhSachUser() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference myRef = database.getReference("account");
@@ -123,7 +171,7 @@ public class ListUserActivity extends AppCompatActivity implements AdapterView.O
                 adapterUsers.clear();
                 for (DataSnapshot data: dataSnapshot.getChildren())
                 {
-                    if (!data.getKey().equals(myUser.getUid())) {
+                    if (!data.getKey().equals(myuser.getUid())) {
                         Users user = new Users();
                         user.setId(data.getKey());
                         user.setImageURL(data.child("imageURL").getValue().toString());
@@ -138,13 +186,5 @@ public class ListUserActivity extends AppCompatActivity implements AdapterView.O
 
             }
         });
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Users user = dsUsers.get(position);
-        Intent intent = new Intent(ListUserActivity.this,ChatActivity.class);
-        intent.putExtra("userid",user.getId());
-        startActivity(intent);
     }
 }

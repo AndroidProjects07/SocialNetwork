@@ -113,7 +113,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 reference.child(userid).child("imageURL").setValue("default");
                                 reference.child(userid).child("name").setValue(name);
                                 reference.child(userid).child("username").setValue(username);
-                                Intent intent = new Intent(SignUpActivity.this,ListUserActivity.class);
+                                Intent intent = new Intent(SignUpActivity.this,SocialActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finish();
