@@ -48,9 +48,19 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <ImageView
+            android:paddingTop="5dp"
+            android:id="@+id/chooseImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image" />
+
         <EditText
             android:id="@+id/txtSend"
+            android:paddingLeft="5dp"
             android:background="@android:color/transparent"
+            android:layout_toRightOf="@+id/chooseImage"
             android:hint="Nhập nội dung tin nhắn"
             android:layout_centerVertical="true"
             android:layout_width="match_parent"

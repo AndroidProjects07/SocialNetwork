@@ -15,13 +15,11 @@
 
             android:layout_width="40dp"
             android:layout_height="40dp" />
-        <TextView
-            android:id="@+id/txtShowMessage"
+        <ImageView
+            android:id="@+id/imgChat"
             android:layout_toRightOf="@+id/profile_image"
-            android:padding="8dp"
-            android:textSize="18sp"
-            android:background="@drawable/background_right"
-            android:text="hello"
+
+
             android:textColor="#fff"
             android:layout_marginLeft="5dp"
             android:layout_alignParentEnd="true"
@@ -30,7 +28,7 @@
         <TextView
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/txtShowMessage"
+            android:layout_below="@+id/imgChat"
             android:text="Đã xem"
             android:id="@+id/txtSeen"
             android:layout_width="wrap_content"

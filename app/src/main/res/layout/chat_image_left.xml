@@ -8,20 +8,16 @@
         android:src="@drawable/default_user_art_g_2"
         android:layout_width="40dp"
         android:layout_height="40dp" />
-    <TextView
-        android:id="@+id/txtShowMessage"
+    <ImageView
+        android:id="@+id/imgChat"
         android:layout_toRightOf="@+id/profile_image"
-        android:padding="8dp"
-        android:textSize="18sp"
-        android:background="@drawable/background_left"
-        android:text="hello"
         android:textColor="#000"
         android:layout_marginLeft="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <TextView
         android:visibility="gone"
-        android:layout_below="@+id/txtShowMessage"
+        android:layout_below="@+id/imgChat"
         android:id="@+id/txtSeen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
