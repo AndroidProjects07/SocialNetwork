@@ -12,6 +12,8 @@
         android:id="@+id/imgChat"
         android:layout_toRightOf="@+id/profile_image"
         android:textColor="#000"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside"
         android:layout_marginLeft="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

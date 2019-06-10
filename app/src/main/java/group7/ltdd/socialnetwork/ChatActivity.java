@@ -3,6 +3,8 @@ package group7.ltdd.socialnetwork;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -64,14 +66,18 @@ public class ChatActivity extends AppCompatActivity {
 
     ValueEventListener seenListener;
 
-    String imageURL="default";
+    String imageURL="default", audioURL="default";
 
-    ImageView chooseImage;
+    ImageView chooseImage,chooseAudio;
 
     StorageReference storageReference;
+
+    public static MediaPlayer mediaPlayer;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask uploadTask;
+    private int isImage=0;
+    public static TextView txtStt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,12 +86,14 @@ public class ChatActivity extends AppCompatActivity {
         AddEvents();
     }
 
-
-
     private void AddControls() {
         profile_image= this.<CircleImageView>findViewById(R.id.profile_image);
         txtUser= this.<TextView>findViewById(R.id.txtUsername);
         chooseImage = this.<ImageView>findViewById(R.id.chooseImage);
+        chooseAudio=findViewById(R.id.chooseAudio);
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        txtStt = findViewById(R.id.txtStatus);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
@@ -97,7 +105,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         myUser = FirebaseAuth.getInstance().getCurrentUser();
-
         //
         recyclerView = findViewById(R.id.listChat);
         recyclerView.setHasFixedSize(true);
@@ -145,19 +152,29 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 imageURL="default";
+                audioURL="default";
                 if (edtMessage.getText().toString().equals(""))
                     Toast.makeText(ChatActivity.this, "Bạn chưa nhập nội dung tin nhắn", Toast.LENGTH_SHORT).show();
                 else
-                SendMessage(myUser.getUid(),userid,edtMessage.getText().toString(),imageURL);
+                SendMessage(myUser.getUid(),userid,edtMessage.getText().toString(),imageURL,audioURL);
                 edtMessage.setText("");
             }
         });
         chooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isImage=1;
                 openImage();
             }
         });
+        chooseAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isImage=0;
+                openImage();
+            }
+        });
+
     }
 
     private void SeenMessage(final String userid){
@@ -182,7 +199,7 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void SendMessage(String sender, String reciever, String message, String imageURL)
+    private void SendMessage(String sender, String reciever, String message, String imageURL,String audioURL)
     {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
@@ -192,6 +209,7 @@ public class ChatActivity extends AppCompatActivity {
         hashMap.put("message",message);
         hashMap.put("isseen","false");
         hashMap.put("imageURL",imageURL);
+        hashMap.put("audioURL",audioURL);
         reference.child("Chats").push().setValue(hashMap);
     }
 
@@ -228,18 +246,33 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         reference.removeEventListener(seenListener);
+        if (mediaPlayer!=null){
+            mediaPlayer.reset();
+            mediaPlayer.release();
+            mediaPlayer=null;
+        }
     }
 
+    public static void TimeOut(){
+
+        mediaPlayer.stop();
+        mediaPlayer.reset();
+    }
 
     private void openImage() {
         Intent intent = new Intent();
-        intent.setType("image/*");
+        if (isImage==1)
+            intent.setType("image/*");
+        else
+            intent.setType("audio/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent,IMAGE_REQUEST);
     }
@@ -273,7 +306,10 @@ public class ChatActivity extends AppCompatActivity {
                     if (task.isSuccessful()){
                         Uri downloadUri = task.getResult();
                         String mUri = downloadUri.toString();
-                        SendMessage(myUser.getUid(),userid,edtMessage.getText().toString(),mUri);
+                        if (isImage==1)
+                            SendMessage(myUser.getUid(),userid,edtMessage.getText().toString(),mUri,"default");
+                        else
+                            SendMessage(myUser.getUid(),userid,edtMessage.getText().toString(),"default",mUri);
                         pd.dismiss();
                     }
                     else

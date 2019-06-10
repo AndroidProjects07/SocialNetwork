@@ -55,12 +55,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_image" />
+        <ImageView
+            android:paddingTop="8dp"
+            android:id="@+id/chooseAudio"
+            android:layout_toRightOf="@+id/chooseImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_audio" />
 
         <EditText
             android:id="@+id/txtSend"
             android:paddingLeft="5dp"
             android:background="@android:color/transparent"
-            android:layout_toRightOf="@+id/chooseImage"
+            android:layout_toRightOf="@+id/chooseAudio"
             android:hint="Nhập nội dung tin nhắn"
             android:layout_centerVertical="true"
             android:layout_width="match_parent"
@@ -72,6 +79,7 @@
             android:layout_alignParentRight="true"
             android:layout_width="40dp"
             android:layout_height="40dp" />
+
     </RelativeLayout>
 
 </RelativeLayout>

@@ -18,6 +18,8 @@
             android:layout_height="40dp" />
         <RelativeLayout
             android:id="@+id/layout_audio"
+            android:background="@drawable/background_right"
+            android:paddingRight="10dp"
             android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -39,7 +41,7 @@
                 android:textColor="#000"
                 android:layout_toRightOf="@+id/imgPlay"
                 android:id="@+id/txtStatus"
-                android:text="Play"
+                android:text="Start Play"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </RelativeLayout>

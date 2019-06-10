@@ -10,8 +10,9 @@
         android:layout_width="40dp"
         android:layout_height="40dp" />
     <RelativeLayout
+        android:background="@drawable/background_left"
         android:layout_toRightOf="@+id/profile_image"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <ImageView
@@ -34,7 +35,7 @@
             android:id="@+id/txtStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Play" />
+            android:text="Start Play" />
     </RelativeLayout>
     <TextView
         android:visibility="gone"

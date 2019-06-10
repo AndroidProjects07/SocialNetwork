@@ -6,16 +6,17 @@ public class Chat {
     private String message;
     private String isseen;
     private String imageURL;
-
+    private String audioURL;
     public Chat() {
     }
 
-    public Chat(String sender, String reciever, String message, String isseen, String imageURL) {
+    public Chat(String sender, String reciever, String message, String isseen, String imageURL, String audioURL) {
         this.sender = sender;
         this.reciever = reciever;
         this.message = message;
         this.isseen = isseen;
         this.imageURL=imageURL;
+        this.audioURL=audioURL;
     }
 
     public String getSender() {
@@ -56,5 +57,13 @@ public class Chat {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public String getAudioURL() {
+        return audioURL;
+    }
+
+    public void setAudioURL(String audioURL) {
+        this.audioURL = audioURL;
     }
 }
