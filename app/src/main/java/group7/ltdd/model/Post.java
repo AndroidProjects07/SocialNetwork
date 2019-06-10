@@ -2,8 +2,7 @@ package group7.ltdd.model;
 
 public class Post {
     private String idPost;
-    private String profileURL;
-    private String name;
+    private String idUser;
     private String time;
     private String content;
     private String imageURL;
@@ -13,10 +12,9 @@ public class Post {
     public Post() {
     }
 
-    public Post(String idPost, String profileURL, String name, String time, String content, String imageURL, int countLike, int liked) {
+    public Post(String idPost, String idUser, String time, String content, String imageURL, int countLike, int liked) {
         this.idPost = idPost;
-        this.profileURL = profileURL;
-        this.name = name;
+        this.idUser = idUser;
         this.time = time;
         this.content = content;
         this.imageURL = imageURL;
@@ -32,20 +30,12 @@ public class Post {
         this.idPost = idPost;
     }
 
-    public String getProfileURL() {
-        return profileURL;
+    public String getIdUser() {
+        return idUser;
     }
 
-    public void setProfileURL(String profileURL) {
-        this.profileURL = profileURL;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
     }
 
     public String getTime() {

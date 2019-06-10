@@ -25,17 +25,17 @@
 
             <TextView
                 android:id="@+id/txtName"
-                android:textColor="#000"
-                android:textSize="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="Loading..."
+                android:textColor="#000"
+                android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/txtTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:text="Loading..." />
         </LinearLayout>
 
     </LinearLayout>

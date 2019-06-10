@@ -1,5 +1,6 @@
 package group7.ltdd.socialnetwork;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -65,16 +66,22 @@ public class SocialActivity extends AppCompatActivity {
     ArrayList<Users> dsUsers;
     UserAdapter adapterUsers;
 
+
+
     StorageReference storageReference;
     private static final int IMAGE_REQUEST = 1;
     private Uri imageUri;
     private StorageTask uploadTask;
 
-    EditText edtSearchUsers;
+    EditText edtSearchUsers,edtStatus;
 
     ListView lvPost;
     ArrayList<Post> dsPost;
     PostAdapter postAdapter;
+
+    ListView lvPostPersonal;
+    ArrayList<Post> dsPostPersonal;
+    PostAdapter postAdapterPersonal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +105,7 @@ public class SocialActivity extends AppCompatActivity {
         tab1.setContent(R.id.tab1);
         tab1.setIndicator("",getResources().getDrawable(R.drawable.ic_profile));
         tabHost.addTab(tab1);
+        lvPostPersonal=findViewById(R.id.listPostPersonal);
         //tab 2
         TabHost.TabSpec tab2 = tabHost.newTabSpec("t2");
         tab2.setContent(R.id.tab2);
@@ -116,7 +124,7 @@ public class SocialActivity extends AppCompatActivity {
         imgProfile= this.<ImageView>findViewById(R.id.profile_image);
 
         edtSearchUsers= this.<EditText>findViewById(R.id.searchUser);
-
+        edtStatus = findViewById(R.id.edtStatus);
 
 
         //set storage
@@ -127,6 +135,12 @@ public class SocialActivity extends AppCompatActivity {
         postAdapter = new PostAdapter(SocialActivity.this,R.layout.item_news,dsPost);
         lvPost.setAdapter(postAdapter);
         LayDanhSachBaiDang();
+
+
+        dsPostPersonal = new ArrayList<>();
+        postAdapterPersonal=new PostAdapter(SocialActivity.this,R.layout.item_news,dsPostPersonal);
+        lvPostPersonal.setAdapter(postAdapterPersonal);
+        LayDanhSachBaiDangCaNhan();
     }
 
 
@@ -166,7 +180,7 @@ public class SocialActivity extends AppCompatActivity {
             public void onTabChanged(String tabId) {
 
                 if (tabId.equalsIgnoreCase("t1")) {
-
+                    LayDanhSachBaiDangCaNhan();
                 } else if (tabId.equalsIgnoreCase("t2")) {
                     LayDanhSachBaiDang();
                 } else {
@@ -195,6 +209,13 @@ public class SocialActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+        edtStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SocialActivity.this,StatusActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -243,7 +264,7 @@ public class SocialActivity extends AppCompatActivity {
         {
             case R.id.logout:
                 FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(SocialActivity.this,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivity(new Intent(getApplicationContext(),MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 return true;
         }
         return false;
@@ -356,20 +377,59 @@ public class SocialActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               ArrayList<Post> arrPost = new ArrayList<>();
                 dsPost.clear();
                 for (DataSnapshot data: dataSnapshot.getChildren())
                 {
                     Post post = new Post();
                     post.setIdPost(data.getKey());
-                    post.setProfileURL(data.child("profileURL").getValue().toString());
-                    post.setName(data.child("name").getValue().toString());
+                    post.setIdUser(data.child("iduser").getValue().toString());
                     post.setTime(data.child("time").getValue().toString());
                     post.setContent(data.child("content").getValue().toString());
                     post.setImageURL(data.child("imageURL").getValue().toString());
                     post.setCountLike(Integer.parseInt(data.child("countlike").getValue().toString()));
-                    dsPost.add(post);
+                    post.setLiked(Integer.parseInt(data.child("liked").getValue().toString()));
+                    arrPost.add(post);
+                }
+                for (int i=arrPost.size()-1; i>=0; i--){
+                    dsPost.add(arrPost.get(i));
                 }
                 postAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void LayDanhSachBaiDangCaNhan(){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                dsPostPersonal.clear();
+                ArrayList<Post> arrPost = new ArrayList<>();
+                for (DataSnapshot data: dataSnapshot.getChildren())
+                {
+                    if (data.child("iduser").getValue().toString().equals(user.getUid())){
+                        Post post = new Post();
+                        post.setIdPost(data.getKey());
+                        post.setIdUser(data.child("iduser").getValue().toString());
+                        post.setTime(data.child("time").getValue().toString());
+                        post.setContent(data.child("content").getValue().toString());
+                        post.setImageURL(data.child("imageURL").getValue().toString());
+                        post.setCountLike(Integer.parseInt(data.child("countlike").getValue().toString()));
+                        post.setLiked(Integer.parseInt(data.child("liked").getValue().toString()));
+                        arrPost.add(post);
+                    }
+                }
+                for (int i=arrPost.size()-1; i>=0; i--) {
+                    dsPostPersonal.add(arrPost.get(i));
+                }
+                postAdapterPersonal.notifyDataSetChanged();
             }
 
             @Override

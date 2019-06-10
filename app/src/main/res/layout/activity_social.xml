@@ -39,42 +39,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:id="@+id/tab2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-                        <ListView
-                            android:id="@+id/listPost"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-                        </ListView>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tab3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-                    <EditText
-                        android:hint="Search..."
-                        android:layout_margin="5dp"
-                        android:id="@+id/searchUser"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                    <ListView
-                        android:id="@+id/listUsers"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </LinearLayout>
-
                 <RelativeLayout
                     android:id="@+id/tab1"
                     android:layout_width="match_parent"
@@ -82,6 +46,7 @@
                     android:orientation="vertical">
 
                     <android.support.v7.widget.CardView
+                        android:id="@+id/cardview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -121,9 +86,70 @@
 
 
                     </android.support.v7.widget.CardView>
-
-
+                    <ListView
+                        android:layout_below="@+id/cardview"
+                        android:id="@+id/listPostPersonal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    </ListView>
                 </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:padding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <ImageView
+                                android:paddingTop="5dp"
+                                android:src="@drawable/ic_write"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                            <EditText
+                                android:id="@+id/edtStatus"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:ems="10"
+                                android:hint="Bạn đang nghĩ gì"
+                                android:gravity="start|top"
+                                android:inputType="textMultiLine" />
+
+                        </LinearLayout>
+                        <ListView
+                            android:id="@+id/listPost"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                        </ListView>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tab3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <EditText
+                        android:hint="Search..."
+                        android:layout_margin="5dp"
+                        android:id="@+id/searchUser"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <ListView
+                        android:id="@+id/listUsers"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
 
             </FrameLayout>
         </LinearLayout>
